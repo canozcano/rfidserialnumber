@@ -1,0 +1,104 @@
+[
+    {
+        "id": "d1f1e582.d6af98",
+        "type": "tab",
+        "label": "RFID Log to Firebase",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "6bb2a13d.aebc5",
+        "type": "serial in",
+        "z": "d1f1e582.d6af98",
+        "name": "",
+        "serial": "4f015babc9fe0397",
+        "x": 160,
+        "y": 120,
+        "wires": [
+            [
+                "ee5cf289.186a1"
+            ]
+        ]
+    },
+    {
+        "id": "ee5cf289.186a1",
+        "type": "function",
+        "z": "d1f1e582.d6af98",
+        "name": "Process RFID Data",
+        "func": "let uid = msg.payload.trim();\nlet timestamp = new Date().toISOString();\n\nif (context.get('lastAction') === 'entry') {\n    context.set('lastAction', 'exit');\n} else {\n    context.set('lastAction', 'entry');\n}\nlet action = context.get('lastAction');\n\nmsg.payload = {\n    uid: uid,\n    timestamp: timestamp,\n    action: action\n};\n\nmsg.firebaseUrl = `enteryoururl`;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 120,
+        "wires": [
+            [
+                "ce33f3a3.f1e88"
+            ]
+        ]
+    },
+    {
+        "id": "ce33f3a3.f1e88",
+        "type": "http request",
+        "z": "d1f1e582.d6af98",
+        "name": "Firebase POST",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 600,
+        "y": 120,
+        "wires": [
+            [
+                "afcf95a7.79d8d8"
+            ]
+        ]
+    },
+    {
+        "id": "afcf95a7.79d8d8",
+        "type": "debug",
+        "z": "d1f1e582.d6af98",
+        "name": "Debug Firebase Response",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "4f015babc9fe0397",
+        "type": "serial-port",
+        "name": "",
+        "serialport": "COM4",
+        "serialbaud": "9600",
+        "databits": "8",
+        "parity": "none",
+        "stopbits": "1",
+        "waitfor": "",
+        "dtr": "none",
+        "rts": "none",
+        "cts": "none",
+        "dsr": "none",
+        "newline": "\\n",
+        "bin": "false",
+        "out": "char",
+        "addchar": "",
+        "responsetimeout": "10000"
+    }
+]
